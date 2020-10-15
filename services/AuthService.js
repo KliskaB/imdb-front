@@ -4,8 +4,8 @@ import config from "../config";
 
 const ENDPOINTS = {
   LOGIN: "/api/auth/login",
-  REGISTER: "/api/auth/register",
-  LOGOUT: "/logout"
+  REGISTER: "/api/users/",
+  LOGOUT: "/logout",
 };
 
 class AuthService extends ApiService {
@@ -22,16 +22,16 @@ class AuthService extends ApiService {
     const token = await this.getToken();
     if (token) {
       this.api.attachHeaders({
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       });
     }
 
     this.api.attachHeaders({
-      clientId: config.CLIENT_ID
+      clientId: config.CLIENT_ID,
     });
   };
 
-  createSession = async user => {
+  createSession = async (user) => {
     await AsyncStorage.setItem("user", JSON.stringify(user));
     await this.setAuthorizationHeader();
   };
@@ -41,7 +41,7 @@ class AuthService extends ApiService {
     this.api.removeHeaders(["Authorization"]);
   };
 
-  login = async loginData => {
+  login = async (loginData) => {
     const { data } = await this.apiClient.post(ENDPOINTS.LOGIN, loginData);
     await this.createSession(data);
     return data;
@@ -53,7 +53,8 @@ class AuthService extends ApiService {
     return { ok: true, data };
   };
 
-  signup = async signupData => {
+  signup = async (signupData) => {
+    console.log(signupData);
     const { data } = await this.apiClient.post(ENDPOINTS.REGISTER, signupData);
 
     return data;

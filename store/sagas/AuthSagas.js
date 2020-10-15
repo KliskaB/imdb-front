@@ -18,8 +18,7 @@ export function* userLogin({ payload }) {
 export function* userRegister({ payload }) {
   try {
     yield call(AuthService.signup, payload);
-
-    yield call(AuthService.login, payload);
+    //yield call(AuthService.login, payload);
     yield put(authUser(true));
     yield call(NavigationService.navigate, "AuthLoading");
   } catch (error) {
