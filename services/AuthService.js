@@ -1,6 +1,7 @@
 import { AsyncStorage } from "react-native";
 import ApiService from "./ApiService";
 import config from "../config";
+import SignUp from "../screens/auth/SignUp";
 
 const ENDPOINTS = {
   LOGIN: "/api/auth/login",
@@ -63,7 +64,14 @@ class AuthService extends ApiService {
   };
 
   signup = async (signupData) => {
-    const { data } = await this.apiClient.post(ENDPOINTS.REGISTER, signupData);
+    let photo = { uri: signupData.profile_picture.uri}
+    let formdata = new FormData();
+
+    formdata.append("email", signupData.email)
+    formdata.append("password", signupData.password)
+    formdata.append("username", signupData.username)
+    formdata.append("profile_picture", {uri: photo.uri, name: signupData.username + '.jpg', type: 'image/jpg'})
+    const { data } = await this.apiClient.post(ENDPOINTS.REGISTER, formdata);
     return data;
   };
 
