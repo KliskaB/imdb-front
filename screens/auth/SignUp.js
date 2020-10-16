@@ -12,7 +12,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [profile_picture, setProfilePicture] = useState(null);
+  const [profile_picture, setProfilePicture] = useState("");
 
   navigationOptions = {
     title: "Sign in",
@@ -27,7 +27,7 @@ const SignUp = () => {
     }
 
     let pickerResult = await ImagePicker.launchImageLibraryAsync();
-    setProfilePicture(pickerResult);
+    setProfilePicture(pickerResult.uri);
   };
 
   const handleLogin = (data) => dispatch(register(data));
@@ -53,10 +53,10 @@ const SignUp = () => {
         value={username}
         onChangeText={setUsername}
       ></TextInput>
-      {profile_picture && (
+      {profile_picture !== "" && (
         <View>
           <Image
-            source={{ uri: profile_picture.uri }}
+            source={{ uri: profile_picture }}
             style={{ width: 300, height: 300 }}
           />
         </View>
