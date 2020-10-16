@@ -40,6 +40,11 @@ class AuthService extends ApiService {
     await AsyncStorage.setItem("isSignedUp", JSON.stringify(flag));
   };
 
+  getIsSignedUp = async () => {
+    const value = await AsyncStorage.getItem('isSignedUp');
+    return value !== null && value !== undefined && JSON.parse(value);
+  }
+
   destroySession = async () => {
     await AsyncStorage.clear();
     this.api.removeHeaders(["Authorization"]);
@@ -58,9 +63,7 @@ class AuthService extends ApiService {
   };
 
   signup = async (signupData) => {
-    console.log(signupData);
     const { data } = await this.apiClient.post(ENDPOINTS.REGISTER, signupData);
-
     return data;
   };
 

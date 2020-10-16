@@ -5,6 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
 import { logIn } from "../../store/actions/AuthActions";
 import { MaterialIcons } from "@expo/vector-icons";
+import authService from "../../services/AuthService";
 
 const SignIn = ({ navigation }) => {
 
@@ -19,22 +20,14 @@ const SignIn = ({ navigation }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [isSignedUp, setIsSignedUp] = useState(false);
 
-  const readData = async () => {
-      try {
-        let signedUp = false;
-        const value = await AsyncStorage.getItem('isSignedUp');
-        if (value !== null && value !== undefined) {
-          signedUp = JSON.parse(value);
-          setIsSignedUp(signedUp);
-          setModalOpen(signedUp);
-        }
-      } catch (error) {
-        console.log(error);
-      }
+  const redirectIfRegistered = async () => {
+    const signedUp = await authService.getIsSignedUp()
+    setIsSignedUp(signedUp);
+    setModalOpen(signedUp);
   };
 
   useEffect(() => {
-    readData()
+    redirectIfRegistered()
   }, [])
 
   const handleLogin = (data) => dispatch(logIn(data));
