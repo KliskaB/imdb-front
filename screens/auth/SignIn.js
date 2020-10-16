@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Modal } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, TextInput, Modal, AsyncStorage } from "react-native";
 import PropTypes from "prop-types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
-import { authUserSelector } from "../../store/selectors/AuthUserSelector";
 import { logIn } from "../../store/actions/AuthActions";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const SignIn = ({ navigation }) => {
+
   navigationOptions = {
     title: "Sign in",
   };
@@ -16,9 +16,26 @@ const SignIn = ({ navigation }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [modalOpen, setModalOpen] = useState(true);
-  const authUser = useSelector(authUserSelector);
-  console.log("authUser: ", authUser);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isSignedUp, setIsSignedUp] = useState(false);
+
+  const readData = async () => {
+      try {
+        let signedUp = false;
+        const value = await AsyncStorage.getItem('isSignedUp');
+        if (value !== null && value !== undefined) {
+          signedUp = JSON.parse(value);
+          setIsSignedUp(signedUp);
+          setModalOpen(signedUp);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+  };
+
+  useEffect(() => {
+    readData()
+  }, [])
 
   const handleLogin = (data) => dispatch(logIn(data));
 
@@ -47,8 +64,6 @@ const SignIn = ({ navigation }) => {
       <TouchableOpacity onPress={handleNavigateToRegister}>
         <Text>Register </Text>
       </TouchableOpacity>
-      <MaterialIcons name="add" size={24} onPress={() => setModalOpen(true)} />
-
       <Modal visible={modalOpen} animationType="slide" transparent={true}>
         <View
           style={

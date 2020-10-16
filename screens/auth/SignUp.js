@@ -12,7 +12,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [profile_picture, setProfilePicture] = useState(null);
+  const [profile_picture, setProfilePicture] = useState("");
 
   navigationOptions = {
     title: "Sign in",
@@ -53,7 +53,7 @@ const SignUp = () => {
         value={username}
         onChangeText={setUsername}
       ></TextInput>
-      {profile_picture && (
+      {profile_picture !== "" && (
         <View>
           <Image
             source={{ uri: profile_picture }}

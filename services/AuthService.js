@@ -36,6 +36,10 @@ class AuthService extends ApiService {
     await this.setAuthorizationHeader();
   };
 
+  setSignedUp = async (flag) => {
+    await AsyncStorage.setItem("isSignedUp", JSON.stringify(flag));
+  };
+
   destroySession = async () => {
     await AsyncStorage.clear();
     this.api.removeHeaders(["Authorization"]);
