@@ -66,12 +66,16 @@ class AuthService extends ApiService {
   };
 
   signup = async (signupData) => {
-    let photo = { uri: signupData.profile_picture.uri}
     let formdata = new FormData();
-    formdata.append("email", signupData.email)
-    formdata.append("password", signupData.password)
-    formdata.append("username", signupData.username)
-    formdata.append("profile_picture", {uri: photo.uri, name: signupData.username + '.jpg', type: 'image/jpg'})
+    if(signupData.profile_picture) {
+      let photo = { uri: signupData.profile_picture.uri}
+      formdata.append("profile_picture", {uri: photo.uri, name: signupData.username + '.jpg', type: 'image/jpg'});
+    } else { 
+      formdata.append("profile_picture", "");
+    }
+    formdata.append("email", signupData.email);
+    formdata.append("password", signupData.password);
+    formdata.append("username", signupData.username);
     const response = await this.apiClient.post(ENDPOINTS.REGISTER, formdata);
     return response.data;
   };

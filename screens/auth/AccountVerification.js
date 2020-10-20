@@ -21,7 +21,6 @@ const AccountVerification = ({ navigation }) => {
   const redirectIfVerified = async () => {
     const isVerifiedState = await authService.getIsVerified()
     setIsVerified(isVerifiedState);
-    // prikazi mu njegov Home Page
   };
 
   useEffect(() => {
