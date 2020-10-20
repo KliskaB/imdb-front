@@ -17,6 +17,18 @@ const AccountVerification = ({ navigation }) => {
 
   const [verificationCode, setVerificationCode] = useState("");
   const [isVerified, setIsVerified] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isSignedUp, setIsSignedUp] = useState(false);
+
+  const redirectIfRegistered = async () => {
+    const signedUp = await authService.getIsSignedUp()
+    setIsSignedUp(signedUp);
+    setModalOpen(signedUp);
+  };
+
+  useEffect(() => {
+    redirectIfRegistered()
+  }, [])
 
   const redirectIfVerified = async () => {
     const isVerifiedState = await authService.getIsVerified()
@@ -43,6 +55,29 @@ const AccountVerification = ({ navigation }) => {
       <TouchableOpacity onPress={submitVerification}>
         <Text>Verify</Text>
       </TouchableOpacity>
+      <Modal visible={modalOpen} animationType="slide" transparent={true}>
+        <View
+          style={
+            (StyleSheet.modalContent,
+            {
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "rgba(0,0,0,0.5)",
+            })
+          }
+        >
+          <Text>
+            We've sent you an email. Please, verify your identity before
+            continuing.
+          </Text>
+          <MaterialIcons
+            name="close"
+            size={24}
+            onPress={() => setModalOpen(false)}
+          />
+        </View>
+      </Modal>
     </View>
   );
 };
