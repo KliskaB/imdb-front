@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TextInput, Modal, AsyncStorage } from "react-native";
+import { StyleSheet, Text, View, TextInput, Modal } from "react-native";
 import PropTypes from "prop-types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,7 +15,7 @@ const SignIn = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [isSignedUp, setIsSignedUp] = useState(false);
@@ -33,7 +33,7 @@ const SignIn = ({ navigation }) => {
   const handleLogin = (data) => dispatch(logIn(data));
 
   const submitLogin = () => {
-    handleLogin({ email, password });
+    handleLogin({ username, password });
   };
 
   const handleNavigateToRegister = () => {
@@ -42,9 +42,9 @@ const SignIn = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TextInput
-        placeholder="email"
-        value={email}
-        onChangeText={setEmail}
+        placeholder="username"
+        value={username}
+        onChangeText={setUsername}
       ></TextInput>
       <TextInput
         placeholder="password"

@@ -1,4 +1,4 @@
-import { LOGIN, AUTH_USER, REGISTER, LOGIN_ERROR, REGISTER_ERROR } from './ActionTypes';
+import { LOGIN, AUTH_USER, REGISTER, LOGIN_ERROR, REGISTER_ERROR, VERIFY_ACCOUNT } from './ActionTypes';
 
 export const logIn = logInData => {
   return {
@@ -31,6 +31,13 @@ export const loginError = payload => {
 export const registerError = payload => {
   return {
     type: REGISTER_ERROR,
+    payload
+  };
+};
+
+export const verify = payload => {
+  return {
+    type: VERIFY_ACCOUNT,
     payload
   };
 };

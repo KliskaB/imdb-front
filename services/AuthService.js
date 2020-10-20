@@ -5,8 +5,10 @@ import SignUp from "../screens/auth/SignUp";
 
 const ENDPOINTS = {
   LOGIN: "/api/auth/login",
-  REGISTER: "/api/users/",
+  REGISTER: "/api/users/register/",
   LOGOUT: "/logout",
+  VERIFY: "/api/users/verify",
+  GET_ME: "/api/users/me/",
 };
 
 class AuthService extends ApiService {
@@ -58,7 +60,7 @@ class AuthService extends ApiService {
   };
 
   logout = async () => {
-    const { data } = await this.apiClient.post(ENDPOINTS.LOGOUT);
+    //const { data } = await this.apiClient.post(ENDPOINTS.LOGOUT);
     await this.destroySession();
     return { ok: true, data };
   };
@@ -66,18 +68,36 @@ class AuthService extends ApiService {
   signup = async (signupData) => {
     let photo = { uri: signupData.profile_picture.uri}
     let formdata = new FormData();
-
     formdata.append("email", signupData.email)
     formdata.append("password", signupData.password)
     formdata.append("username", signupData.username)
     formdata.append("profile_picture", {uri: photo.uri, name: signupData.username + '.jpg', type: 'image/jpg'})
-    const { data } = await this.apiClient.post(ENDPOINTS.REGISTER, formdata);
+    const response = await this.apiClient.post(ENDPOINTS.REGISTER, formdata);
+    return response.data;
+  };
+
+  verify = async (payload) => {
+    const { data } = await this.apiClient.post(ENDPOINTS.VERIFY, payload);
     return data;
   };
 
+  getMe = async () => {
+    const { data } = await this.apiClient.get(ENDPOINTS.GET_ME);
+    return data;
+  }
+
+  setIsVerified = async (flag) => {
+    await AsyncStorage.setItem("isVerified", JSON.stringify(flag));
+  };
+
+  getIsVerified = async () => {
+    const value = await AsyncStorage.getItem('isVerified');
+    return value !== null && value !== undefined && JSON.parse(value);
+  }
+
   getToken = async () => {
     const user = await AsyncStorage.getItem("user");
-    return user ? JSON.parse(user).access_token : undefined;
+    return user ? JSON.parse(user).access : undefined;
   };
 
   getUser = async () => {
