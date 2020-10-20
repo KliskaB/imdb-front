@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
 import { logIn } from "../../store/actions/AuthActions";
+import { Formik } from "formik";
+import * as Yup from 'yup';
 
 const SignIn = ({ navigation }) => {
 
@@ -13,37 +15,64 @@ const SignIn = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
   const handleLogin = (data) => dispatch(logIn(data));
-
-  const submitLogin = () => {
-    handleLogin({ username, password });
-  };
 
   const handleNavigateToRegister = () => {
     navigation.navigate("SignUp");
   };
+
+  const SignInSchema = Yup.object().shape({
+    username: Yup.string()
+      .required('This field is required.'),
+    password: Yup.string()
+      .min(8, 'Password is too short.')
+      .max(30, 'Password is too long.')
+      .required('This field is required.'),
+  });
+
   return (
+    
     <View style={styles.container}>
-      <TextInput
-        placeholder="username"
-        value={username}
-        onChangeText={setUsername}
-      ></TextInput>
-      <TextInput
-        placeholder="password"
-        value={password}
-        onChangeText={setPassword}
-      ></TextInput>
-      <TouchableOpacity onPress={submitLogin}>
-        <Text>Log In </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleNavigateToRegister}>
-        <Text>Register </Text>
-      </TouchableOpacity>
+      <Formik
+        initialValues={{ username: '', password: '' }}
+        validationSchema={SignInSchema}
+        onSubmit={values => {
+          handleLogin(values)
+        }}
+      >
+      {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+        <View>
+          <TextInput
+            placeholder="username"
+            value={values.username}
+            onChangeText={handleChange('username')}
+            onBlur={handleBlur('username')}
+            error={errors.username}
+          ></TextInput>
+          {errors.username ? (
+                <Text style={styles.error}>{errors.username}</Text>
+              ) : null}
+          <TextInput
+            placeholder="password"
+            value={values.password}            
+            onChangeText={handleChange('password')}
+            onBlur={handleBlur('password')}
+            error={errors.password}
+          ></TextInput>
+          {errors.password ? (
+                <Text style={styles.error}>{errors.password}</Text>
+              ) : null}
+          <TouchableOpacity onPress={handleSubmit}>
+            <Text>Log In </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleNavigateToRegister}>
+            <Text>Register </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      </Formik>
     </View>
+    
   );
 };
 
@@ -58,4 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
   },
+  error: {
+    color: "red",
+  }
 });

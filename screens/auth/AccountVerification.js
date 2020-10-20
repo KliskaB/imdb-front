@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { verify } from "../../store/actions/AuthActions";
 import { MaterialIcons } from "@expo/vector-icons";
 import authService from "../../services/AuthService";
+import { Formik } from "formik";
+import * as Yup from 'yup';
 
 const AccountVerification = ({ navigation }) => {
 
@@ -15,7 +17,6 @@ const AccountVerification = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  const [verificationCode, setVerificationCode] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [isSignedUp, setIsSignedUp] = useState(false);
@@ -39,45 +40,64 @@ const AccountVerification = ({ navigation }) => {
     redirectIfVerified()
   }, [])
 
-  const handleVerification = (data) => dispatch(verify(data));
+  const AccountVerificationSchema = Yup.object().shape({
+    verification_code: Yup.string()
+      .matches(/^[0-9]{4}$/, 'Verification code contains of exactly 4 digits.')
+      .required('This field is required.'),
+  });
 
-  const submitVerification = () => {
-    handleVerification({ verification_code: verificationCode });
-  };
+  const handleVerification = (data) => dispatch(verify(data));
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="verification code"
-        value={verificationCode}
-        onChangeText={setVerificationCode}
-      ></TextInput>
-      <TouchableOpacity onPress={submitVerification}>
-        <Text>Verify</Text>
-      </TouchableOpacity>
-      <Modal visible={modalOpen} animationType="slide" transparent={true}>
-        <View
-          style={
-            (StyleSheet.modalContent,
-            {
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "rgba(0,0,0,0.5)",
-            })
-          }
-        >
-          <Text>
-            We've sent you an email. Please, verify your identity before
-            continuing.
-          </Text>
-          <MaterialIcons
-            name="close"
-            size={24}
-            onPress={() => setModalOpen(false)}
-          />
+      <Formik
+        initialValues={{ verification_code: '' }}
+        validationSchema={AccountVerificationSchema}
+        onSubmit={values => {
+          handleVerification(values)
+        }}
+      >
+      {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+        <View>
+          <TextInput
+            placeholder="verification code"
+            value={values.verification_code}
+            onChangeText={handleChange('verification_code')}
+            onBlur={handleBlur('verification_code')}
+            error={errors.verification_code}
+          ></TextInput>
+          {errors.verification_code ? (
+                    <Text style={styles.error}>{errors.verification_code}</Text>
+                  ) : null}
+          <TouchableOpacity onPress={handleSubmit}>
+            <Text>Verify</Text>
+          </TouchableOpacity>
+          <Modal visible={modalOpen} animationType="slide" transparent={true}>
+            <View
+              style={
+                (StyleSheet.modalContent,
+                {
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(0,0,0,0.5)",
+                })
+              }
+            >
+              <Text>
+                We've sent you an email. Please, verify your identity before
+                continuing.
+              </Text>
+              <MaterialIcons
+                name="close"
+                size={24}
+                onPress={() => setModalOpen(false)}
+              />
+            </View>
+          </Modal>
         </View>
-      </Modal>
+      )}
+      </Formik>
     </View>
   );
 };
@@ -94,4 +114,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 100,
   },
+  error: {
+    color: "red",
+  }
 });
