@@ -5,13 +5,24 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from "react-redux";
 import { register } from "../../store/actions/AuthActions";
 import * as ImagePicker from "expo-image-picker";
+import { Formik } from "formik";
+import * as Yup from 'yup';
+
+const SignUpSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid email format.')
+    .required('This field is required.'),
+  password: Yup.string()
+    .min(8, 'Password should contain at least 8 characters.')
+    .max(30, 'Password can contain a maximum of 30 characters.')
+    .required('This field is required.'),
+  username: Yup.string()
+    .required('This field is refuired.'),
+});
 
 const SignUp = () => {
   const dispatch = useDispatch();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
   const [profile_picture, setProfilePicture] = useState(null);
 
   navigationOptions = {
@@ -30,41 +41,64 @@ const SignUp = () => {
     setProfilePicture(pickerResult);
   };
 
-  const handleLogin = (data) => dispatch(register(data));
-
-  const submitLogin = () => {
-    handleLogin({ email, password, username, profile_picture });
-  };
+  const handleRegister = (data) => dispatch(register({ ...data, profile_picture }));
 
   return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="email"
-        value={email}
-        onChangeText={setEmail}
-      ></TextInput>
-      <TextInput
-        placeholder="password"
-        value={password}
-        onChangeText={setPassword}
-      ></TextInput>
-      <TextInput
-        placeholder="username"
-        value={username}
-        onChangeText={setUsername}
-      ></TextInput>
-      {profile_picture && (
-        <View>
-          <Image
-            source={{ uri: profile_picture.uri }}
-            style={{ width: 300, height: 300 }}
-          />
-        </View>
+      <Formik
+        initialValues={{ email: '', password: '', username: '' }}
+        validationSchema={SignUpSchema}
+        onSubmit={values => {
+          handleRegister(values)
+        }}
+      >
+      {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+      <View>
+        <TextInput
+          placeholder="email"
+          value={values.email}
+          onChangeText={handleChange('email')}
+          onBlur={handleBlur('email')}
+          error={errors.email}
+        ></TextInput>
+        {errors.email ? (
+                <Text style={styles.error}>{errors.email}</Text>
+              ) : null}
+        <TextInput
+          placeholder="password"
+          value={values.password}
+          onChangeText={handleChange('password')}
+          onBlur={handleBlur('password')}
+          error={errors.password}
+        ></TextInput>
+        {errors.password ? (
+                <Text style={styles.error}>{errors.password}</Text>
+              ) : null}
+        <TextInput
+          placeholder="username"
+          value={values.username}
+          onChangeText={handleChange('username')}
+          onBlur={handleBlur('username')}
+          error={errors.username}
+        ></TextInput>
+        {errors.username ? (
+                <Text style={styles.error}>{errors.username}</Text>
+              ) : null}
+        {profile_picture && (
+          <View>
+            <Image
+              source={{ uri: profile_picture.uri }}
+              style={{ width: 300, height: 300 }}
+            />
+          </View>
+        )}
+        <Button title="Choose Photo" onPress={openImagePickerAsync} />
+        <TouchableOpacity onPress={handleSubmit}>
+          <Text>Register </Text>
+        </TouchableOpacity>
+      </View>
       )}
-      <Button title="Choose Photo" onPress={openImagePickerAsync} />
-      <TouchableOpacity onPress={submitLogin}>
-        <Text>Register </Text>
-      </TouchableOpacity>
+      </Formik>
     </View>
   );
 };
@@ -80,4 +114,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     flex: 1,
   },
+  error: {
+    color: "red",
+  }
 });

@@ -3,6 +3,7 @@ import { ActivityIndicator, View, StyleSheet, StatusBar } from "react-native";
 import PropTypes from "prop-types";
 
 import authService from "../services/AuthService";
+import { authUser } from "../store/actions/AuthActions";
 
 const AuthLoadingScreen = ({ navigation }) => {
   useEffect(() => {
@@ -11,8 +12,11 @@ const AuthLoadingScreen = ({ navigation }) => {
 
   _bootstrapAsync = async () => {
     const user = await authService.getUser();
-    if (user) {
+    const isVerified = await authService.getIsVerified();
+    if (user && isVerified) {
       navigation.navigate("MainStack");
+    } else if(user && !isVerified){
+      navigation.navigate("VerifyStack");
     } else {
       navigation.navigate("AuthStack");
     }

@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 const LeftSlider = ({ navigation }) => {
   logout = () => {
     AsyncStorage.clear();
-    this.props.navigation.navigate("AuthStack");
+    navigation.navigate("AuthStack");
   };
 
   return (
