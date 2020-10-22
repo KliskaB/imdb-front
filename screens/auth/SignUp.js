@@ -8,6 +8,18 @@ import * as ImagePicker from "expo-image-picker";
 import { Formik } from "formik";
 import * as Yup from 'yup';
 
+const SignUpSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid email format.')
+    .required('This field is required.'),
+  password: Yup.string()
+    .min(8, 'Password should contain at least 8 characters.')
+    .max(30, 'Password can contain a maximum of 30 characters.')
+    .required('This field is required.'),
+  username: Yup.string()
+    .required('This field is refuired.'),
+});
+
 const SignUp = () => {
   const dispatch = useDispatch();
 
@@ -30,18 +42,6 @@ const SignUp = () => {
   };
 
   const handleRegister = (data) => dispatch(register({ ...data, profile_picture }));
-
-  const SignUpSchema = Yup.object().shape({
-    email: Yup.string()
-      .email('Invalid email format.')
-      .required('This field is required.'),
-    password: Yup.string()
-      .min(8, 'Password should contain at least 8 characters.')
-      .max(30, 'Password can contain a maximum of 30 characters.')
-      .required('This field is required.'),
-    username: Yup.string()
-      .required('This field is refuired.'),
-  });
 
   return (
     <View style={styles.container}>

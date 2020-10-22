@@ -76,8 +76,8 @@ class AuthService extends ApiService {
     formdata.append("email", signupData.email);
     formdata.append("password", signupData.password);
     formdata.append("username", signupData.username);
-    const response = await this.apiClient.post(ENDPOINTS.REGISTER, formdata);
-    return response.data;
+    const { data } = await this.apiClient.post(ENDPOINTS.REGISTER, formdata);
+    return data;
   };
 
   verify = async (payload) => {

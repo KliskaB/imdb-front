@@ -9,6 +9,12 @@ import authService from "../../services/AuthService";
 import { Formik } from "formik";
 import * as Yup from 'yup';
 
+const AccountVerificationSchema = Yup.object().shape({
+  verification_code: Yup.string()
+    .matches(/^[0-9]{4}$/, 'Verification code contains of exactly 4 digits.')
+    .required('This field is required.'),
+});
+
 const AccountVerification = ({ navigation }) => {
 
   navigationOptions = {
@@ -39,12 +45,6 @@ const AccountVerification = ({ navigation }) => {
   useEffect(() => {
     redirectIfVerified()
   }, [])
-
-  const AccountVerificationSchema = Yup.object().shape({
-    verification_code: Yup.string()
-      .matches(/^[0-9]{4}$/, 'Verification code contains of exactly 4 digits.')
-      .required('This field is required.'),
-  });
 
   const handleVerification = (data) => dispatch(verify(data));
 

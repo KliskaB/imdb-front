@@ -7,6 +7,15 @@ import { logIn } from "../../store/actions/AuthActions";
 import { Formik } from "formik";
 import * as Yup from 'yup';
 
+const SignInSchema = Yup.object().shape({
+  username: Yup.string()
+    .required('This field is required.'),
+  password: Yup.string()
+    .min(8, 'Password is too short.')
+    .max(30, 'Password is too long.')
+    .required('This field is required.'),
+});
+
 const SignIn = ({ navigation }) => {
 
   navigationOptions = {
@@ -20,15 +29,6 @@ const SignIn = ({ navigation }) => {
   const handleNavigateToRegister = () => {
     navigation.navigate("SignUp");
   };
-
-  const SignInSchema = Yup.object().shape({
-    username: Yup.string()
-      .required('This field is required.'),
-    password: Yup.string()
-      .min(8, 'Password is too short.')
-      .max(30, 'Password is too long.')
-      .required('This field is required.'),
-  });
 
   return (
     
