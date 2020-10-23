@@ -76,6 +76,7 @@ class AuthService extends ApiService {
     formdata.append("email", signupData.email);
     formdata.append("password", signupData.password);
     formdata.append("username", signupData.username);
+    console.log(formdata);
     const { data } = await this.apiClient.post(ENDPOINTS.REGISTER, formdata);
     return data;
   };
@@ -88,6 +89,15 @@ class AuthService extends ApiService {
   getMe = async () => {
     const { data } = await this.apiClient.get(ENDPOINTS.GET_ME);
     return data;
+  }
+
+  setUserDetails = async (user) => {
+    await AsyncStorage.setItem("userDetails", JSON.stringify(user));
+  }
+
+  getUserDetails = async () => {
+    const user = await AsyncStorage.getItem('userDetails');
+    return user !== null && user !== undefined && JSON.parse(user);
   }
 
   setIsVerified = async (flag) => {
