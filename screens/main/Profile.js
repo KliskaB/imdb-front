@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Image, View, Button } from "react-native";
 import PropTypes from "prop-types";
 import authService from "../../services/AuthService";
-import MyText from "../../components/helper/MyText";
+import Label from "../../components/helper/Label";
 
 const AccountVerification = ({ navigation }) => {
 
@@ -27,14 +27,14 @@ const AccountVerification = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-        <MyText>My profile</MyText> 
+        <Label>My profile</Label> 
         <View style={styles.row}>
-            <MyText>Email: </MyText>
-            <MyText>{userDetails.email}</MyText>
+            <Label>Email: </Label>
+            <Label>{userDetails.email}</Label>
         </View>
         <View style={styles.row}>
-            <MyText>Username: </MyText> 
-            <MyText>{userDetails.username}</MyText>
+            <Label>Username: </Label> 
+            <Label>{userDetails.username}</Label>
         </View>
         <View>
             <Image
