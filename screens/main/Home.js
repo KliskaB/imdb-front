@@ -20,7 +20,7 @@ const Home = () => {
   const movies = useSelector(makeSelectMoviesList());
 
   useEffect(() => {
-    handleMoviesGet();
+    //handleMoviesGet();
   }, []);
 
   return (

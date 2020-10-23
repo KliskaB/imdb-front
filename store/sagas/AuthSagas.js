@@ -9,6 +9,7 @@ export function* userLogin({ payload }) {
     yield call(AuthService.login, payload);
     yield put(authUser(true));
     const data = yield call(AuthService.getMe);
+    yield call(AuthService.setUserDetails, data);
     yield call(AuthService.setIsVerified, data.is_verified);
     yield call(NavigationService.navigate, "AuthLoading");
   } catch (error) {

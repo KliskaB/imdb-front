@@ -7,9 +7,11 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import TabBarIcon from "../components/TabBarIcon";
 import LeftSlider from "../screens/main/LeftSlider";
 import Home from "../screens/main/Home";
+import Profile from "../screens/main/Profile";
 
 const HomeStack = createStackNavigator({
-  Home
+  Home,
+  Profile
 });
 
 /* eslint-disable react/prop-types, react/display-name */
